@@ -22,30 +22,6 @@ EOT
       name     = string
     })
   }))
-  validation {
-    condition = alltrue([
-      for k, v in var.capacity_reservations : (
-        v.zone == null || (length(v.zone) > 0)
-      )
-    ])
-    error_message = "must not be empty"
-  }
-  validation {
-    condition = alltrue([
-      for k, v in var.capacity_reservations : (
-        length(v.sku.name) > 0
-      )
-    ])
-    error_message = "must not be empty"
-  }
-  validation {
-    condition = alltrue([
-      for k, v in var.capacity_reservations : (
-        v.sku.capacity >= 0
-      )
-    ])
-    error_message = "must be at least 0"
-  }
   # --- Unconfirmed validation candidates, derived from azurerm_capacity_reservation's provider source ---
   # Not auto-enabled: either a bespoke provider validator we can't safely translate,
   # or a path that crosses a list-typed block (needs its own for_each wrapping).
@@ -56,6 +32,15 @@ EOT
   #   source:    [from capacityreservationgroups.ValidateCapacityReservationGroupID] !ok
   # path: capacity_reservation_group_id
   #   source:    [from capacityreservationgroups.ValidateCapacityReservationGroupID] err != nil
+  # path: zone
+  #   condition: length(value) > 0
+  #   message:   must not be empty
+  # path: sku.name
+  #   condition: length(value) > 0
+  #   message:   must not be empty
+  # path: sku.capacity
+  #   condition: value >= 0
+  #   message:   must be at least 0
   # path: tags
   #   condition: length(value) <= 50
   #   message:   [from tags.Validate: invalid when len(value) > 50]
