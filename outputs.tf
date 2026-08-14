@@ -12,7 +12,7 @@ output "capacity_reservations_name" {
 }
 output "capacity_reservations_sku" {
   description = "Map of sku values across all capacity_reservations, keyed the same as var.capacity_reservations"
-  value       = { for k, v in azurerm_capacity_reservation.capacity_reservations : k => v.sku if v.sku != null && length(v.sku) > 0 }
+  value       = { for k, v in azurerm_capacity_reservation.capacity_reservations : k => one(v.sku) if v.sku != null && length(v.sku) > 0 }
 }
 output "capacity_reservations_tags" {
   description = "Map of tags values across all capacity_reservations, keyed the same as var.capacity_reservations"
